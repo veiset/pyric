@@ -44,15 +44,15 @@ class Pyric():
         if function in self.listeners[event]:
             self.listeners[event].remove(function)
 
-    def event(self, event, data=None):
-        self.log.verbose(("event", event, data))
+    def event(self, e):
+        self.log.verbose(("event", e.event, e.data))
 
-        if event == "ping":
-            self.send('PONG %s' % data['pong'])
+        if e.event == "ping":
+            self.send('PONG %s' % e.data['pong'])
 
-        if event in self.listeners:
-            for function in self.listeners[event]:
-                function(event, data)
+        if e.event in self.listeners:
+            for function in self.listeners[e.event]:
+                function(e)
 
     def connect(self):
         ''' '''
@@ -108,7 +108,7 @@ class Pyric():
         '''
         # 
         noise = len(self.nick) + len(self.ident) + 80 + len(target) + 9
-        
+
         lines = textwrap.wrap(message,512-noise)
         for line in lines:
             self.send('PRIVMSG %s :%s' % (target, line))

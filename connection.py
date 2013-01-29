@@ -11,7 +11,7 @@ def connect(pyric):
     '''
     irc = socket.socket()
 
-    # Trying to bind vhost
+    # Try to bind vhost
     if pyric.ipaddr:
         try: 
             irc.bind((pyric.ipaddr, pyric.port))
@@ -54,9 +54,7 @@ class StayAlive(threading.Thread):
             for line in data:
                 line = line.rstrip()
             
-                self.pyric.event('_raw', line)
+                self.pyric.event(events.Event('_raw', {'raw' : line}))
+                self.pyric.event(events.parse(line))
 
-                event, info = events.parse(line)
-                self.pyric.event(event, info)
-
-        self.pyric.event('disconnect')
+        self.pyric.event(events.Event('disconnect'))
