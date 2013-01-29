@@ -1,23 +1,24 @@
-import ircregex as regex
+import ircregex
 import re
 
 class Event():
-    def __init__(self, event, data={}):
+    def __init__(self, event):
         self.event = event
-        self.data = data
+        self.data = {}
 
     def add(self, key, value): self.data[key] = value
     def get(self, key): return self.data[key]
     def has(self, key): return key in self.data
 
 def parse(data):
-    ping = re.match(regex.PING, data)
-    event = re.match(regex.EVENT, data)
+    ping = re.match(ircregex.PING, data)
+    event = re.match(ircregex.EVENT, data)
+    events = []
 
     if ping: 
         e = Event('ping')
         e.add('pong', ping.group(1))
-        return e
+        events.append(e)
 
     elif event:
         prefix = event.group(1)
@@ -33,14 +34,14 @@ def parse(data):
             e.add('channel', channel)
             if len(params) > 1: e.add('message', param[1])
 
-            return e
+            events.append(e)
 
         elif command == 'JOIN':
             e = Event('join')
             e.add('user', prefix)
             e.add('channel', param)
 
-            return e
+            events.append(e)
 
         elif command == 'PRIVMSG':
             user, ident, host = re.split('[!@]', prefix)
@@ -54,14 +55,29 @@ def parse(data):
             e.add('private', not (channel[0] == '#'))
             e.add('message', message)
 
-            return e
+            events.append(e)
+
+            if message.startswith('.') and len(message) > 1:
+                cmd = message.split(' ',1)
+                e = Event('cmd.' + cmd[0][1:])
+                e.add('user', user)
+                e.add('ident', ident)
+                e.add('host', host)
+                e.add('channel', channel)
+                e.add('private', not (channel[0] == '#'))
+                e.add('cmd', cmd[0])
+                if len(cmd) > 1: e.add('argv', cmd[1])
+
+                events.append(e)
 
         else:
             e = Event(command.lower())
             e.add('param', param)
             
-            return e
+            events.append(e)
 
     else:
-        return Event('unknown')
+       events.append(Event('unknown'))
+
+    return events
 

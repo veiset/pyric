@@ -54,7 +54,10 @@ class StayAlive(threading.Thread):
             for line in data:
                 line = line.rstrip()
             
-                self.pyric.event(events.Event('_raw', {'raw' : line}))
-                self.pyric.event(events.parse(line))
+                e = events.Event('_raw')
+                e.add('raw', line)
+                self.pyric.event(e)
+                for e in events.parse(line):
+                    self.pyric.event(e)
 
         self.pyric.event(events.Event('disconnect'))
