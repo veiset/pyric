@@ -23,7 +23,7 @@ class PartModule():
             self.bot.say(event.get('channel'), "Never!")
 
 from pyric import *
-bot = pyric.Pyric('vzbotte', 'vz', 'vz', 'irc.homelien.no', 6667)
+bot = irc.Instance('vzbotte', 'vz', 'vz', 'irc.homelien.no', 6667)
 bot.connect()
 bot.join('#brbot')
 

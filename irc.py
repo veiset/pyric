@@ -7,7 +7,7 @@ class Logger():
     def warn(self, msg): print('+', msg)
     def error(self, msg): print('!', msg)
 
-class Pyric():
+class Instance():
 
     def __init__(self, nick, ident, name, server, port, ipaddr=None):
         '''

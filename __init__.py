@@ -1,1 +1,2 @@
-__all__ = ['connection', 'events', 'ircregex', 'pyric']
+#!/usr/bin/evn python
+__all__ = ['connection', 'events', 'ircregex', 'irc']
