@@ -39,7 +39,7 @@ def parse(data):
         elif command == 'JOIN':
             e = Event('join')
             e.add('user', prefix)
-            e.add('channel', param)
+            e.add('channel', param[1:])
 
             events.append(e)
 

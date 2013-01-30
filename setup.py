@@ -6,5 +6,6 @@ setup(name='pyric',
       author='Vegard Veiset',
       author_email='veiset@gmail.com',
       url='http://github.com/veiset/pyric/',
-      py_modules=['pyric', 'connection', 'ircregex', 'events'],
+      packages=['pyric'],
+      package_dir={'pyric' : '.'},
 )

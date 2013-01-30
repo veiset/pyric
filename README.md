@@ -27,3 +27,9 @@ module = Module(bot)
 bot.connect()
 bot.join('#brbot')
 ```
+
+Running tests
+-------------
+Requires py.test
+
+```py.test -v test/test_events.py```
