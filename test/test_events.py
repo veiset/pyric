@@ -43,12 +43,8 @@ def test_parseCmdIsBothPrivmsgEventAndCmdEvent():
     assert privmsg.event == 'privmsg'
     assert cmd.event.startswith('cmd.')
 
-def test_parseCmdWithArgvContainsArgv():
-    cmd = events.parse(event_CMD % (user, chan) + ' arg1 arg2')[1]
-    assert cmd.event.startswith('cmd.')
-    assert cmd.get('argv') == 'arg1 arg2'
 
-# Event Types has correct data
+# Event Types parse the data correctly
 def test_pingEventContainsParsedData():
     ping = events.parse(event_PING % server)[0]
     assert ping.get('pong') == server
@@ -58,3 +54,59 @@ def test_joinEventContainsParsedData():
     assert join.get('user') == user
     assert join.get('channel') == chan
 
+def test_partEventContainsParsedData():
+    part = events.parse(event_PART % (user, chan))[0]
+    assert part.get('user') == user
+    assert part.get('channel') == chan 
+    assert not part.has('message')
+
+def test_partEventWMsgContainsParsedData():
+    part = events.parse(event_PART_MSG % (user, chan, msg))[0]
+    assert part.get('user') == user
+    assert part.get('channel') == chan 
+    assert part.get('message') == msg
+
+def test_privmsgEventContainsParsedData():
+    user = '%s!%s@%s' % (nick, ident, host)
+    privmsg = events.parse(event_PRIVMSG % (user, chan, msg))[0]
+    assert privmsg.get('user') == nick 
+    assert privmsg.get('ident') == ident
+    assert privmsg.get('host') == host
+    assert privmsg.get('channel') == chan
+    assert privmsg.get('private') == False
+    assert privmsg.get('message') == msg
+
+def test_privatePrivmsgEventContainsParsedData():
+    user = '%s!%s@%s' % (nick, ident, host)
+    chan = 'nickname'
+    privmsg = events.parse(event_PRIVMSG % (user, chan, msg))[0]
+    assert privmsg.get('user') == nick 
+    assert privmsg.get('ident') == ident
+    assert privmsg.get('host') == host
+    assert privmsg.get('channel') == chan
+    assert privmsg.get('private') == True 
+    assert privmsg.get('message') == msg
+
+def test_cmdNoArgvEventContainsParsedData():
+    user = '%s!%s@%s' % (nick, ident, host)
+    msg = '.cmd'
+    cmd = events.parse(event_PRIVMSG % (user, chan, msg))[1]
+    assert cmd.get('user') == nick 
+    assert cmd.get('ident') == ident
+    assert cmd.get('host') == host
+    assert cmd.get('channel') == chan
+    assert cmd.get('private') == False 
+    assert cmd.get('cmd') == msg
+
+def test_cmdNoArgvEventContainsParsedData():
+    user = '%s!%s@%s' % (nick, ident, host)
+    command = '.cmd'
+    argv = 'arg1 arg2'
+    cmd = events.parse(event_PRIVMSG % (user, chan, command + ' ' + argv))[1]
+    assert cmd.get('user') == nick 
+    assert cmd.get('ident') == ident
+    assert cmd.get('host') == host
+    assert cmd.get('channel') == chan
+    assert cmd.get('private') == False 
+    assert cmd.get('cmd') == command
+    assert cmd.get('argv') == argv

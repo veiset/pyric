@@ -26,13 +26,13 @@ def parse(data):
         param = event.group(3)
 
         if command == 'PART':
-            params = param.split(':',1)
+            params = param.split(' :',1)
             channel = params[0]
 
             e = Event('part')
             e.add('user',    prefix)
             e.add('channel', channel)
-            if len(params) > 1: e.add('message', param[1])
+            if len(params) > 1: e.add('message', params[1])
 
             events.append(e)
 
@@ -45,7 +45,7 @@ def parse(data):
 
         elif command == 'PRIVMSG':
             user, ident, host = re.split('[!@]', prefix)
-            channel, message = param.split(':',1)
+            channel, message = param.split(' :',1)
 
             e = Event('privmsg')
             e.add('user', user)
