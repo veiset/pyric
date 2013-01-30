@@ -10,22 +10,24 @@ Install
 Example usage
 -------------
 ```python
+class PartModule():                                                                  
+    ''' module for parting a channel '''                                         
+    def __init__(self, bot):                                                     
+        self.bot = bot                                                           
+        self.bot.addListener("cmd.part", self.part)                               
+
+    def part(self, event):                                                       
+        if event.has('argv') and event.get('argv') == 'please':
+            self.bot.part(event.get('channel'))
+        else:
+            self.bot.say(event.get('channel'), "Never!")
+
 from pyric import *
-class Module():
-    ''' module for parting a channel '''
-
-    def __init__(self, bot):
-        self.bot = bot
-        self.bot.addListener("privmsg", self.test)
-
-    def test(self, event):
-        if event.get('message') == 'part':
-            self.bot.part(info['channel'])
-
-bot = Pyric("vzbottest", "vz", "vz", "irc.homelien.no", 6667)
-module = Module(bot)
+bot = pyric.Pyric('vzbotte', 'vz', 'vz', 'irc.homelien.no', 6667)
 bot.connect()
 bot.join('#brbot')
+
+m = PartModule(bot)
 ```
 
 Running tests
