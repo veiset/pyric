@@ -84,6 +84,16 @@ class Instance():
     def part(self, channel, message=None):
         self.send('PART %s' % channel)
 
+    def mode(self, channel, mode):
+        ''' 
+        IRC Channel MODE 
+        
+        Keyword arguments:
+        channel -- IRC channel name
+        mode    -- mode (e.g: +o vz)
+        '''
+        self.send('MODE %s %s' % (channel, mode))
+
     def say(self, target, message):
         '''
         say() -> None
