@@ -40,7 +40,12 @@ def parse(data):
             e = Event('join')
             e.add('user', prefix)
             e.add('channel', param[1:])
+            events.append(e)
 
+        elif command == '353':
+            e = Event('names')
+            params = param.split(" :")
+            e.add('users', params[1].split(" "))
             events.append(e)
 
         elif command == 'PRIVMSG':

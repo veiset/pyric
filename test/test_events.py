@@ -8,6 +8,7 @@ host            = 'veiset.org'
 user            = '%s!%s@%s' % (nick, ident, host)
 chan            = '#brbot'
 msg             = 'hello, and goodbye'
+users           = '@vz Ymgve Snuskotin +brunobto andern mn'
 
 event_PING      = 'PING :%s'             # (server)
 event_PART_MSG  = ':%s PART %s :%s'      # (user, chan, msg)
@@ -15,9 +16,13 @@ event_PART      = ':%s PART %s'          # (user, chan)
 event_JOIN      = ':%s JOIN :%s'         # (user, chan)
 event_PRIVMSG   = ':%s PRIVMSG %s :%s'   # (user, chan, msg)
 event_CMD       = ':%s PRIVMSG %s :.cmd' # (user, chan)
-
+event_353       = ':%s 353 %s = %s :%s' # (server, user, chan, users)
 
 # Event Types 
+def test_parse353NamesEvent():
+    event = events.parse(event_353 % (server, user, chan, users))
+    assert event[0].event == 'names'
+
 def test_parsePingReturnsOnePingEvent():
     event = events.parse(event_PING % server)
     assert event[0].event == 'ping'
@@ -45,6 +50,10 @@ def test_parseCmdIsBothPrivmsgEventAndCmdEvent():
 
 
 # Event Types parse the data correctly
+def test_namesEventContainsParsedData():
+    names = events.parse(event_353 % (server, user, chan, users))[0]
+    assert names.get('users') == users.split(' ')
+
 def test_pingEventContainsParsedData():
     ping = events.parse(event_PING % server)[0]
     assert ping.get('pong') == server
