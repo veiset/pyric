@@ -1,2 +1,5 @@
 #!/usr/bin/evn python
-__all__ = ['connection', 'events', 'ircregex', 'irc']
+
+__title__ = 'pyric'
+__version__ = '0.1'
+__author__ = 'Vegard Veiset'

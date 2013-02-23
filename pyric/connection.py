@@ -1,6 +1,8 @@
 import socket
-import events
 import threading
+
+from ircparser.ircparser import parse
+from pyric.events import Event
 
 def connect(pyric):
     '''
@@ -46,18 +48,14 @@ class StayAlive(threading.Thread):
             try:
                 buffr += str(self.pyric.irc.recv(1024),'UTF-8')
             except:
-                self.pyric.log.error(("parse-error",
-                    "could not parse data from irc server"))
+                self.pyric.log.error(("parse-error", "could not read data correctly from irc server"))
+
             data = buffr.split('\n')
             buffr = data.pop()
         
             for line in data:
-                line = line.rstrip()
-            
-                e = events.Event('_raw')
-                e.add('raw', line)
+                eventdata = parse(line.rstrip(),'dict')
+                e = Event(eventdata)
                 self.pyric.event(e)
-                for e in events.parse(line):
-                    self.pyric.event(e)
 
-        self.pyric.event(events.Event('disconnect'))
+        self.pyric.event(Event({'type' : 'disconnect'}))

@@ -1,11 +1,13 @@
 import textwrap
-import connection
+import pyric.connection as connection
 
 class Logger():
-    def __init__(self): ''' '''
-    def verbose(self, msg): print('.', msg)
-    def warn(self, msg): print('+', msg)
-    def error(self, msg): print('!', msg)
+    def verbose(self, msg): 
+        print('.', msg)
+    def warn(self, msg): 
+        print('+', msg)
+    def error(self, msg): 
+        print('!', msg)
 
 class Instance():
 
@@ -45,14 +47,31 @@ class Instance():
             self.listeners[event].remove(function)
 
     def event(self, e):
-        self.log.verbose(("event", e.event, e.data))
+        self.log.verbose(("event", e.get('type'), e.data))
+        
+        event = str(e.get('type')).lower()
 
-        if e.event == "ping":
-            self.send('PONG %s' % e.data['pong'])
+        if event == "ping":
+            self.send('PONG %s' % e.get('msg'))
+            self.log.verbose(("PONG"))
 
-        if e.event in self.listeners:
-            for function in self.listeners[e.event]:
+        if event in self.listeners:
+            for function in self.listeners[event]:
                 function(e)
+
+        # commands
+        if event == "privmsg" and e.get('msg')[0] == '.':
+            if len(e.get('msg')) > 1:
+                params = e.get('msg').split(' ',1)
+                if len(params) > 1:
+                    e.add('param',params[1:])
+                e.add('cmd', params[0])
+                cmd = 'cmd' + params[0]
+
+                if cmd in self.listeners:
+                    for function in self.listeners[cmd]:
+                        function(e)
+                
 
     def connect(self):
         ''' '''
@@ -122,4 +141,3 @@ class Instance():
         lines = textwrap.wrap(message,512-noise)
         for line in lines:
             self.send('PRIVMSG %s :%s' % (target, line))
-

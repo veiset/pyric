@@ -12,8 +12,6 @@ Table of Contents
 * [3.2 - Implementation example](#32---implementation-example)
 * [Appendix - Testing](#appendix---testing)
 
-
-
 1 - Installation
 ------------
 This IRC framework uses Python 3. To install the bot type the following:
@@ -37,20 +35,20 @@ and replies with text ```Oh no you didn't!```. The bot will also ask people join
 ```I like bacon, <username>. Do you?```.
 
 ```python
-from pyric import *
-
-bot = irc.Instance('simpleBot', 'vz', 'vz', 'irc.homelien.no', 6667)
+from pyric import irc
+bot = irc.Instance('vzbot', 'vz', 'vz', 'irc.homelien.no', 6667)
 
 def myHandler(event): 
-    bot.irc.say(event.get("channel"), "Oh no you didn't!")
+    bot.say(event.get("channel"), "Oh no you didn't!")
 def myJoinHandler(event):
-    bot.irc.say(event.get("channel"), "I like bacon, %s. Do you?" % event.get("nick"))
-   
+    bot.say(event.get("channel"), "I like bacon, %s. Do you?" % event.get('user')[0])
+
 bot.addListener("cmd.greet", myHandler)
-bot.addListiner("join", myJoinHandler)
+bot.addListener("join", myJoinHandler)
 
 bot.connect()
 bot.join('#brbot')
+
 ```
 
 Scenario:
