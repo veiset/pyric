@@ -42,7 +42,7 @@ from pyric import *
 bot = irc.Instance('simpleBot', 'vz', 'vz', 'irc.homelien.no', 6667)
 
 def myHandler(event): 
-   bot.irc.say(event.get("channel"), "Oh no you didn't!")
+    bot.irc.say(event.get("channel"), "Oh no you didn't!")
 def myJoinHandler(event):
     bot.irc.say(event.get("channel"), "I like bacon, %s. Do you?" % event.get("nick"))
    
@@ -55,11 +55,11 @@ bot.join('#brbot')
 
 Scenario:
 ```
-       --> | simpleBot has joined #informatikk
+       --> | simpleBot has joined #brbot
         vz | Welcom slave IRC bot!
         vz | .greet
  simpleBot | Oh no you didn't!
-       --> | andern has joined #informatikk
+       --> | andern has joined #brbot
  simpleBot | I like bacon, andern. Do you?
 ```
 
