@@ -4,6 +4,9 @@ import threading
 from ircparser.ircparser import parse
 from pyric.events import Event
 
+def newSocket():
+    return socket.socket()
+
 def connect(pyric):
     '''
     Connects to an IRC server.
@@ -11,7 +14,7 @@ def connect(pyric):
     Keyword arguments:
     pyric -- an instantiated pyric object
     '''
-    irc = socket.socket()
+    irc = newSocket()
 
     # Try to bind vhost
     if pyric.ipaddr:
