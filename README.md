@@ -19,6 +19,8 @@ This IRC framework uses Python 3. To install the bot type the following:
 ```bash
 git clone http://github.com/veiset/pyric.git
 cd pyric
+git submodule init
+git submodule update
 python setup.py install
 ```
 
@@ -68,6 +70,13 @@ For an implementation example see the [Brunobot](http://github.com/veiset/Brunob
 
 Appendix - Testing
 ------------------
-Requires py.test
 
-```py.test -v test/test_events.py```
+Using py.test
+```
+py.test -v test/test_events.py
+```
+
+Using nosetests with test-coverage
+```
+nosetests-3.3 --with-coverage --cover-html
+```
