@@ -105,7 +105,7 @@ class ConnectionTest(unittest.TestCase):
         e, data = events.pop()
         errortype, error = data
         assert e == 'warn'
-        assert errortype == 'net-error'
+        assert errortype == 'net-warn'
         assert error == 'could not bind IP-address: %s ' % self.pyric.ipaddr
         assert len(self.pyric.log.events) == 0
 

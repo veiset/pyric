@@ -17,13 +17,24 @@ def connect(pyric):
             pyric.irc.bind((pyric.ipaddr, pyric.port))
             pyric.log.info("bound IP-address: %s " % pyric.ipaddr)
         except: 
-            pyric.log.warn(("net-error", 
-                           "could not bind IP-address: %s " % pyric.ipaddr))
+            pyric.log.warn((
+                "net-warn", 
+                "could not bind IP-address: %s " % pyric.ipaddr
+            ))
     
     pyric.irc.connect((pyric.server, pyric.port))
-    pyric.irc.send(bytes('NICK %s\n' % (pyric.nick), 'UTF-8'))
-    pyric.irc.send(bytes('USER %s %s bla :%s\n' % 
-            (pyric.ident, pyric.server, pyric.name), 'UTF-8'))
+    pyric.irc.send(
+        bytes(
+            'NICK %s\n' % (pyric.nick), 
+            'UTF-8'
+        )
+    )
+    pyric.irc.send(
+        bytes(
+            'USER %s %s bla :%s\n' % (pyric.ident, pyric.server, pyric.name), 
+            'UTF-8'
+        )
+    )
 
 
 class StayAlive(threading.Thread):
@@ -56,8 +67,10 @@ class StayAlive(threading.Thread):
         try:
             self.buffr += str(self.pyric.irc.recv(2048),'UTF-8')
         except:
-            self.pyric.log.error(("net-error", 
-                "could not read data correctly from irc server"))
+            self.pyric.log.error((
+                "net-error", 
+                "could not read data correctly from irc server"
+            ))
 
         data = self.buffr.split('\n')
         # data which is not terminated by newline will be kept in buffer
@@ -69,5 +82,7 @@ class StayAlive(threading.Thread):
                 e = Event(eventdata)
                 self.pyric.event(e)
             except:
-                self.pyric.log.error(("parse-error", 
-                    "could not parse received data correctly"))
+                self.pyric.log.error((
+                    "parse-error", 
+                    "could not parse received data correctly"
+                ))
