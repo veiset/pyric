@@ -1,5 +1,6 @@
 import textwrap
 import pyric.connection as connection
+import socket
 
 class Logger():
     def verbose(self, msg): 
@@ -75,7 +76,9 @@ class Instance():
 
     def connect(self):
         ''' '''
-        self.irc = connection.connect(self)
+        #self.irc = connection.connect(self)
+        self.irc = socket.socket()
+        connection.connect(self)
         self.connected = True
         self.connection = connection.StayAlive(self)
         self.connection.start()
