@@ -1,3 +1,18 @@
+def eventMethod1(event):
+    return event
+def eventMethod2(event):
+    return event
+
+def throwMethod(param=None):
+    raise Exception
+
+class EventClass():
+    def __init__(self):
+        self.events = []
+
+    def method(self, event):
+        self.events.append(('method', event))
+
 class Log:
     def __init__(self):
         self.events = []
@@ -27,6 +42,8 @@ class Socket():
     def recv(self, n):
         return self.data
         
+    def close(self):
+        self.events.append(('close'))
 
 class Pyric:
 

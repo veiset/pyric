@@ -3,7 +3,7 @@ import pyric.connection as connection
 import socket
 
 class Logger():
-    def verbose(self, msg): 
+    def info(self, msg): 
         print('.', msg)
     def warn(self, msg): 
         print('+', msg)
@@ -36,25 +36,25 @@ class Instance():
         self.listeners = {}
 
     def addListener(self, event, function):
-        self.log.verbose(('addListener', event, function))
+        self.log.info(('addListener', event, function))
         if event in self.listeners: 
             self.listeners[event].append(function)
         else:
             self.listeners[event] = [function]
 
     def removeListener(self, event, function):
-        self.log.verbose(('removeListener', event, function))
+        self.log.info(('removeListener', event, function))
         if function in self.listeners[event]:
             self.listeners[event].remove(function)
 
     def event(self, e):
-        self.log.verbose(("event", e.get('type'), e.data))
+        self.log.info(("event", e.get('type'), e.data))
         
         event = str(e.get('type')).lower()
 
         if event == "ping":
             self.send('PONG %s' % e.get('msg'))
-            self.log.verbose(("PONG"))
+            self.log.info(("PONG"))
 
         if event in self.listeners:
             for function in self.listeners[event]:
@@ -92,9 +92,8 @@ class Instance():
         try:
             self.irc.close()
         except:
-            self.log.warn('Could not close the IRC socket. \
-                    (Might already be closed)')
-        self.log.verbose('Bot terminated')
+            self.log.warn('Could not close the IRC socket. (Might already be closed)')
+        self.log.info('Bot terminated')
 
     def send(self, data):
         self.irc.send(bytes(data + '\r\n', 'UTF-8'))
