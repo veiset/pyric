@@ -7,6 +7,7 @@ class Socket():
 
     def __init__(self):
         self.events = []
+        self.data = ''
     
     def connect(self, con):
         self.events.append(('connect', con))
@@ -16,10 +17,16 @@ class Socket():
 
     def send(self, data):
         self.events.append(('send', data))
+
+    def recv(self, n):
+        return self.data
         
 
 class Pyric:
 
     def __init__(self):
         self.log = Log()
+        self.events = []
 
+    def event(self, e):
+        self.events.append(('event', e))

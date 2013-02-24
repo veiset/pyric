@@ -43,22 +43,26 @@ class StayAlive(threading.Thread):
         '''
         threading.Thread.__init__(self)
         self.pyric = pyric
+        self.buffr = ''
 
     def run(self):
-        buffr = ''
 
         while self.pyric.connected:
-            try:
-                buffr += str(self.pyric.irc.recv(1024),'UTF-8')
-            except:
-                self.pyric.log.error(("parse-error", "could not read data correctly from irc server"))
-
-            data = buffr.split('\n')
-            buffr = data.pop()
-        
-            for line in data:
-                eventdata = parse(line.rstrip(),'dict')
-                e = Event(eventdata)
-                self.pyric.event(e)
+            self.receive()
 
         self.pyric.event(Event({'type' : 'disconnect'}))
+
+    def receive(self):
+        try:
+            self.buffr += str(self.pyric.irc.recv(2048),'UTF-8')
+        except:
+            self.pyric.log.error(("parse-error", "could not read data correctly from irc server"))
+
+        data = self.buffr.split('\n')
+        # last line (which is not terminated by newline) will be kept in buffer
+        self.buffr = data.pop()
+    
+        for line in data:
+            eventdata = parse(line.rstrip(),'dict')
+            e = Event(eventdata)
+            self.pyric.event(e)
