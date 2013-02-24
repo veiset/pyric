@@ -8,6 +8,7 @@ class ConnectionTest(unittest.TestCase):
     def setUp(self):
 
         self.pyric = mocks.Pyric()
+        self.pyric.log = mocks.Log()
         self.pyric.ipaddr = '10.0.0.1'
         self.pyric.server = 'irc.veiset.org'
         self.pyric.port   = 6667
@@ -78,3 +79,33 @@ class ConnectionTest(unittest.TestCase):
         assert self.connection.buffr == ''
 
         
+    def test_that_parse_error_get_handled(self):
+        self.pyric.irc = self.irc
+        self.connection = connection.StayAlive(self.pyric)
+
+        self.irc.data = bytes('!\n','UTF-8')
+        self.connection.receive()
+        events = self.pyric.log.events
+        e, data = events.pop()
+        errortype, error = data
+        assert e == 'error'
+        assert errortype == 'parse-error'
+        assert error == 'could not parse received data correctly'
+        assert len(self.pyric.log.events) == 0
+
+    def test_that_vhost_bind_error_gets_handeled(self):
+        self.pyric.irc = self.irc
+        def throwError(n):
+            raise Exception
+
+        self.irc.bind = throwError
+        connection.connect(self.pyric)
+
+        events = self.pyric.log.events
+        e, data = events.pop()
+        errortype, error = data
+        assert e == 'warn'
+        assert errortype == 'net-error'
+        assert error == 'could not bind IP-address: %s ' % self.pyric.ipaddr
+        assert len(self.pyric.log.events) == 0
+

@@ -1,7 +1,13 @@
 class Log:
-    def warn(self,msg): ''' '''
-    def error(self,msg): ''' '''
-    def info(self,msg): ''' '''
+    def __init__(self):
+        self.events = []
+
+    def warn(self,msg):
+        self.events.append(('warn', msg))
+    def error(self,msg):
+        self.events.append(('error', msg))
+    def info(self,msg):
+        self.events.append(('info', msg))
 
 class Socket():
 
@@ -25,7 +31,6 @@ class Socket():
 class Pyric:
 
     def __init__(self):
-        self.log = Log()
         self.events = []
 
     def event(self, e):

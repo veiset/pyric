@@ -76,7 +76,6 @@ class Instance():
 
     def connect(self):
         ''' '''
-        #self.irc = connection.connect(self)
         self.irc = socket.socket()
         connection.connect(self)
         self.connected = True
