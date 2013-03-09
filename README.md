@@ -56,7 +56,7 @@ bot.join('#brbot')
 Scenario:
 ```
        --> | simpleBot has joined #brbot
-        vz | Welcom slave IRC bot!
+        vz | Welcome slave IRC bot!
         vz | .greet
  simpleBot | Oh no you didn't!
        --> | andern has joined #brbot
