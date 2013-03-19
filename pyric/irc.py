@@ -5,8 +5,10 @@ import socket
 class Logger():
     def info(self, msg): 
         print('.', msg)
+
     def warn(self, msg): 
         print('+', msg)
+
     def error(self, msg): 
         print('!', msg)
 
@@ -65,9 +67,12 @@ class Instance():
             if len(e.get('msg')) > 1:
                 params = e.get('msg').split(' ',1)
                 if len(params) > 1:
-                    e.add('param',params[1:])
+                    e.add('param',params[1])
                 e.add('cmd', params[0])
                 cmd = 'cmd' + params[0]
+                e.add('type', cmd)
+
+                self.log.info(("event", e.get('type'), e.data))
 
                 if cmd in self.listeners:
                     for function in self.listeners[cmd]:

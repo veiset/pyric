@@ -1,4 +1,5 @@
 import socket
+import traceback
 import threading
 
 from ircparser.ircparser import parse
@@ -67,6 +68,7 @@ class StayAlive(threading.Thread):
         try:
             self.buffr += str(self.pyric.irc.recv(2048),'UTF-8')
         except:
+            traceback.print_stack()  
             self.pyric.log.error((
                 "net-error", 
                 "could not read data correctly from irc server"
@@ -82,6 +84,7 @@ class StayAlive(threading.Thread):
                 e = Event(eventdata)
                 self.pyric.event(e)
             except:
+                traceback.print_stack()  
                 self.pyric.log.error((
                     "parse-error", 
                     "could not parse received data correctly"
