@@ -14,6 +14,8 @@ class Logger():
 
 class Instance():
 
+    WILDCARD = "*"
+
     def __init__(self, nick, ident, name, server, port, ipaddr=None):
         '''
         Construct a connection ready to connect to an IRC server.
@@ -58,11 +60,13 @@ class Instance():
             self.send('PONG %s' % e.get('msg'))
             self.log.info(("PONG"))
 
-        if event in self.listeners:
+        if self.WILDCARD in self.listeners:
+            for function in self.listeners[self.WILDCARD]:
+                function(e)
+        elif event in self.listeners:
             for function in self.listeners[event]:
                 function(e)
 
-        # commands
         if event == "privmsg" and e.get('msg')[0] == '.':
             if len(e.get('msg')) > 1:
                 params = e.get('msg').split(' ',1)
