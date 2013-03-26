@@ -103,7 +103,7 @@ class Instance():
             self.irc.close()
         except:
             self.log.warn('Could not close the IRC socket. '
-                          'Might already be closed)')
+                          '(Might already be closed)')
 
         self.log.info('Bot terminated')
 
