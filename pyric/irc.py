@@ -54,18 +54,18 @@ class Instance():
             self.listeners[event].remove(function)
 
     def event(self, e):
-        self.log.info(("event", e.get('type'), e.data))
+        if self.WILDCARD in self.listeners:
+            for function in self.listeners[self.WILDCARD]:
+                function(e)
 
+        self.log.info(("event", e.get('type'), e.data))
         event = str(e.get('type')).lower()
 
         if event == "ping":
             self.send('PONG %s' % e.get('msg'))
             self.log.info(("PONG"))
 
-        if self.WILDCARD in self.listeners:
-            for function in self.listeners[self.WILDCARD]:
-                function(e)
-        elif event in self.listeners:
+        if event in self.listeners:
             for function in self.listeners[event]:
                 function(e)
 
