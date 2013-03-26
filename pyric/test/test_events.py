@@ -1,5 +1,5 @@
 import unittest
-import mocks
+import pyric.test.mocks as mocks
 import pyric.events as events
 
 class EventTest(unittest.TestCase):

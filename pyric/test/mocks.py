@@ -49,6 +49,7 @@ class Pyric:
 
     def __init__(self):
         self.events = []
+        self.log = Log()
 
     def event(self, e):
         self.events.append(('event', e))
