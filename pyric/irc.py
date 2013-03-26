@@ -2,15 +2,17 @@ import textwrap
 import pyric.connection as connection
 import socket
 
+
 class Logger():
-    def info(self, msg): 
+    def info(self, msg):
         print('.', msg)
 
-    def warn(self, msg): 
+    def warn(self, msg):
         print('+', msg)
 
-    def error(self, msg): 
+    def error(self, msg):
         print('!', msg)
+
 
 class Instance():
 
@@ -19,7 +21,7 @@ class Instance():
     def __init__(self, nick, ident, name, server, port, ipaddr=None):
         '''
         Construct a connection ready to connect to an IRC server.
-        
+
         Keyword arguments:
         nick     -- the bot nickname
         ident    -- the bot ident
@@ -33,7 +35,7 @@ class Instance():
         self.name = name
         self.server = server
         self.port = port
-        self.ipaddr = ipaddr 
+        self.ipaddr = ipaddr
         self.connection = None
         self.connected = False
         self.log = Logger()
@@ -41,7 +43,7 @@ class Instance():
 
     def addListener(self, event, function):
         self.log.info(('addListener', event, function))
-        if event in self.listeners: 
+        if event in self.listeners:
             self.listeners[event].append(function)
         else:
             self.listeners[event] = [function]
@@ -53,7 +55,7 @@ class Instance():
 
     def event(self, e):
         self.log.info(("event", e.get('type'), e.data))
-        
+
         event = str(e.get('type')).lower()
 
         if event == "ping":
@@ -69,9 +71,9 @@ class Instance():
 
         if event == "privmsg" and e.get('msg')[0] == '.':
             if len(e.get('msg')) > 1:
-                params = e.get('msg').split(' ',1)
+                params = e.get('msg').split(' ', 1)
                 if len(params) > 1:
-                    e.add('param',params[1])
+                    e.add('param', params[1])
                 e.add('cmd', params[0])
                 cmd = 'cmd' + params[0]
                 e.add('type', cmd)
@@ -81,7 +83,6 @@ class Instance():
                 if cmd in self.listeners:
                     for function in self.listeners[cmd]:
                         function(e)
-                
 
     def connect(self):
         ''' '''
@@ -101,7 +102,9 @@ class Instance():
         try:
             self.irc.close()
         except:
-            self.log.warn('Could not close the IRC socket. (Might already be closed)')
+            self.log.warn('Could not close the IRC socket. '
+                          'Might already be closed)')
+
         self.log.info('Bot terminated')
 
     def send(self, data):
@@ -114,9 +117,9 @@ class Instance():
         self.send('PART %s' % channel)
 
     def mode(self, channel, mode):
-        ''' 
-        IRC Channel MODE 
-        
+        '''
+        IRC Channel MODE
+
         Keyword arguments:
         channel -- IRC channel name
         mode    -- mode (e.g: +o vz)
@@ -126,9 +129,9 @@ class Instance():
     def say(self, target, message):
         '''
         say() -> None
-        
+
         Send a message to a target on the connected IRC server.
-        
+
         Keyword arguments:
         target  -- recipient of given message
         message -- message to send
@@ -142,12 +145,12 @@ class Instance():
 
         :nick!ident@host PRIVMSG target :text
 
-        That is: 9 additional chars (:!@<space><space><space>:) and RC-LF 
+        That is: 9 additional chars (:!@<space><space><space>:) and RC-LF
         TODO: 80 is temporary. Should be the length of the bots host.
         '''
-        # 
+
         noise = len(self.nick) + len(self.ident) + 80 + len(target) + 9
 
-        lines = textwrap.wrap(message,512-noise)
+        lines = textwrap.wrap(message, 512-noise)
         for line in lines:
             self.send('PRIVMSG %s :%s' % (target, line))
